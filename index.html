@@ -1,0 +1,141 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Explore how the frequency of the red allele relates to coat color frequencies in male and female cats.">
+  <title>Red and non-red frequency in cats</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --ink: #302c29;
+      --muted: #716963;
+      --paper: #fffaf3;
+      --panel: #ffffff;
+      --line: #e8ddd0;
+      --red: #c6533d;
+      --gold: #e6a844;
+      --dark: #554b45;
+      --tortie: #99603e;
+      --focus: #315f9b;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      background: var(--paper);
+      color: var(--ink);
+      font: 16px/1.5 system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+    main { width: min(920px, calc(100% - 32px)); margin: 0 auto; padding: 56px 0 48px; }
+    header { max-width: 680px; margin-bottom: 28px; }
+    .eyebrow { margin: 0 0 8px; color: var(--red); font-size: .8rem; font-weight: 750; letter-spacing: .1em; text-transform: uppercase; }
+    h1 { margin: 0; font-family: Georgia, "Times New Roman", serif; font-size: clamp(2rem, 6vw, 3.2rem); line-height: 1.08; letter-spacing: -.035em; }
+    .intro { margin: 14px 0 0; color: var(--muted); font-size: 1.05rem; }
+    .controls, .group, .note { border: 1px solid var(--line); border-radius: 18px; background: var(--panel); box-shadow: 0 8px 28px #44301b0a; }
+    .controls { display: flex; align-items: end; justify-content: space-between; gap: 24px; margin: 28px 0 20px; padding: 22px 24px; }
+    label { display: block; margin-bottom: 7px; font-weight: 700; }
+    .field { display: flex; align-items: center; gap: 9px; }
+    input { width: 130px; border: 1px solid #cfc2b4; border-radius: 9px; padding: 10px 12px; color: var(--ink); font: inherit; font-variant-numeric: tabular-nums; }
+    input:focus-visible { outline: 3px solid #315f9b55; outline-offset: 2px; border-color: var(--focus); }
+    .percent { color: var(--muted); font-size: 1.1rem; }
+    .input-help { margin: 7px 0 0; color: var(--muted); font-size: .87rem; }
+    .summary { min-width: 155px; text-align: right; }
+    .summary strong { display: block; color: var(--red); font-size: 1.8rem; font-variant-numeric: tabular-nums; }
+    .summary span { color: var(--muted); font-size: .88rem; }
+    .results { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px; }
+    .group { padding: 22px 24px 20px; }
+    h2 { margin: 0; font-family: Georgia, "Times New Roman", serif; font-size: 1.55rem; }
+    .group-intro { margin: 4px 0 18px; color: var(--muted); font-size: .92rem; }
+    .row { margin: 15px 0 0; }
+    .row-head { display: flex; justify-content: space-between; gap: 14px; margin-bottom: 6px; }
+    .name { font-weight: 620; }
+    .value { font-variant-numeric: tabular-nums; font-weight: 750; }
+    .track { height: 12px; overflow: hidden; border-radius: 99px; background: #f0e9e1; }
+    .bar { height: 100%; width: 0; border-radius: inherit; transition: width 180ms ease; }
+    .bar.nonred { background: var(--dark); }
+    .bar.red { background: var(--red); }
+    .bar.tortie { background: var(--gold); }
+    .note { margin-top: 20px; padding: 18px 22px; color: var(--muted); font-size: .92rem; }
+    .note strong { color: var(--ink); }
+    .error { min-height: 1.4em; margin: 6px 0 0; color: #a02c20; font-size: .87rem; }
+    footer { margin-top: 20px; color: var(--muted); font-size: .8rem; }
+    @media (max-width: 640px) {
+      main { padding-top: 36px; }
+      .controls { align-items: start; flex-direction: column; gap: 18px; }
+      .summary { text-align: left; }
+      .results { grid-template-columns: 1fr; }
+    }
+    @media (prefers-reduced-motion: reduce) { *, *::before, *::after { scroll-behavior: auto !important; transition-duration: .01ms !important; } }
+  </style>
+</head>
+<body>
+  <main>
+    <header>
+      <p class="eyebrow">A simple genetics calculator</p>
+      <h1>Red and non-red frequency in cats</h1>
+      <p class="intro">Change the red allele frequency and see how the expected coat color frequencies shift in male and female cats.</p>
+    </header>
+
+    <section class="controls" aria-label="Calculator input">
+      <div>
+        <label for="frequency">Red allele in the population</label>
+        <div class="field"><input id="frequency" type="number" min="0" max="100" step="1" value="30" inputmode="decimal" aria-describedby="input-help error"><span class="percent">%</span></div>
+        <p class="input-help" id="input-help">Enter a value from 0 to 100.</p>
+        <p class="error" id="error" role="alert"></p>
+      </div>
+      <div class="summary" aria-live="polite"><strong id="red-summary">30%</strong><span>red allele frequency</span></div>
+    </section>
+
+    <div class="results" aria-live="polite">
+      <section class="group" aria-labelledby="male-title">
+        <h2 id="male-title">Male cats</h2>
+        <p class="group-intro">Each male has one copy of the X-linked color allele.</p>
+        <div class="row"><div class="row-head"><span class="name">Non-red (o/Y)</span><span class="value" id="male-nonred-value">70%</span></div><div class="track" role="img" aria-label="Male non-red frequency"><div class="bar nonred" id="male-nonred-bar"></div></div></div>
+        <div class="row"><div class="row-head"><span class="name">Red (O/Y)</span><span class="value" id="male-red-value">30%</span></div><div class="track" role="img" aria-label="Male red frequency"><div class="bar red" id="male-red-bar"></div></div></div>
+      </section>
+
+      <section class="group" aria-labelledby="female-title">
+        <h2 id="female-title">Female cats</h2>
+        <p class="group-intro">Frequencies follow the two-allele combinations shown below.</p>
+        <div class="row"><div class="row-head"><span class="name">Non-red (o/o)</span><span class="value" id="female-nonred-value">49%</span></div><div class="track" role="img" aria-label="Female non-red frequency"><div class="bar nonred" id="female-nonred-bar"></div></div></div>
+        <div class="row"><div class="row-head"><span class="name">Red (O/O)</span><span class="value" id="female-red-value">9%</span></div><div class="track" role="img" aria-label="Female red frequency"><div class="bar red" id="female-red-bar"></div></div></div>
+        <div class="row"><div class="row-head"><span class="name">Tortoiseshell (O/o)</span><span class="value" id="female-tortie-value">42%</span></div><div class="track" role="img" aria-label="Female tortoiseshell frequency"><div class="bar tortie" id="female-tortie-bar"></div></div></div>
+      </section>
+    </div>
+
+    <aside class="note"><strong>How to read this:</strong> O is the red allele and o is the non-red allele. The male frequencies are p and 1−p; the female frequencies are p², 2p(1−p), and (1−p)². These are expected proportions from the allele frequency, not a prediction for a particular litter.</aside>
+    <footer>Adjust the percentage to explore the model. Values are rounded for display.</footer>
+  </main>
+  <script>
+    const input = document.getElementById('frequency');
+    const error = document.getElementById('error');
+    const percentage = (value) => `${(value * 100).toFixed(1).replace(/\.0$/, '')}%`;
+
+    function setResult(name, proportion) {
+      document.getElementById(`${name}-value`).textContent = percentage(proportion);
+      document.getElementById(`${name}-bar`).style.width = `${Math.max(0, Math.min(100, proportion * 100))}%`;
+    }
+
+    function update() {
+      const raw = input.value.trim();
+      const entered = Number(raw);
+      if (raw === '' || !Number.isFinite(entered) || entered < 0 || entered > 100) {
+        error.textContent = 'Please enter a number between 0 and 100.';
+        return;
+      }
+      error.textContent = '';
+      const p = entered / 100;
+      const q = 1 - p;
+      document.getElementById('red-summary').textContent = percentage(p);
+      setResult('male-nonred', q);
+      setResult('male-red', p);
+      setResult('female-nonred', q * q);
+      setResult('female-red', p * p);
+      setResult('female-tortie', 2 * p * q);
+    }
+
+    input.addEventListener('input', update);
+    update();
+  </script>
+</body>
+</html>
