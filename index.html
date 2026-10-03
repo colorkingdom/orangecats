@@ -27,7 +27,22 @@
       font: 16px/1.5 system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
     }
     main { width: min(920px, calc(100% - 32px)); margin: 0 auto; padding: 56px 0 48px; }
-    header { max-width: 680px; margin-bottom: 28px; }
+    header {
+      display: flex;
+      align-items: center;
+      gap: 32px;
+      margin-bottom: 28px;
+    }
+    .header-copy {
+      flex: 1;
+      min-width: 0;
+    }
+    .header-image {
+      width: 240px;
+      aspect-ratio: 1;
+      object-fit: cover;
+      border-radius: 16px;
+    }   
     .eyebrow { margin: 0 0 8px; color: var(--red); font-size: .8rem; font-weight: 750; letter-spacing: .1em; text-transform: uppercase; }
     h1 { margin: 0; font-family: Georgia, "Times New Roman", serif; font-size: clamp(2rem, 6vw, 3.2rem); line-height: 1.08; letter-spacing: -.035em; }
     .intro { margin: 14px 0 0; color: var(--muted); font-size: 1.05rem; }
@@ -70,12 +85,16 @@
 </head>
 <body>
   <main>
-    <header>
-      <p class="eyebrow">A simple genetics calculator</p>
-      <h1>Red and non-red frequency in cats</h1>
-      <p class="intro">Change the red allele frequency and see how the expected coat color frequencies shift in male and female cats.</p>
-    </header>
 
+    <header>
+      <div class="header-copy">
+        <p class="eyebrow">A simple genetics calculator</p>
+        <h1>Red and non-red frequency in cats</h1>
+        <p class="intro">Change the red allele frequency and see how the expected coat color frequencies shift in male and female cats.</p>
+      </div>
+      <img class="header-image" src="images/red-tortie-black.png" alt="illustration of a black, tortie and a red cat">
+    </header>
+  
     <section class="controls" aria-label="Calculator input">
       <div>
         <label for="frequency">Red allele in the population</label>
@@ -103,7 +122,7 @@
       </section>
     </div>
 
-    <aside class="note"><strong>How to read this:</strong> O is the red allele and o is the non-red allele. <br>'Non-red' represents black or black tabby; other color genes may change those colors to blue or blue tabby, seal point or seal tabby point, etc. <br>The male frequencies are p and 1−p; the female frequencies are p², 2p(1−p), and (1−p)². <br>These are expected proportions from the allele frequency, not a prediction for a particular litter.</aside>
+    <aside class="note"><strong>How to read this:</strong> <br>O is the red allele and o is the non-red allele. <br>'Non-red' represents black or black tabby; other color genes may change those colors to blue or blue tabby, seal point or seal tabby point, etc. <br>The male frequencies are p and 1−p; the female frequencies are p², 2p(1−p), and (1−p)². <br>These are expected proportions from the allele frequency, not a prediction for a particular litter.</aside>
     <footer>
       <p>Adjust the percentage to explore the model. Values are rounded for display.</p>
       <p>Made by Corinne Benavides-Gyger at Color Kingdom</p>
